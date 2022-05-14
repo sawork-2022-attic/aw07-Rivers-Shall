@@ -34,4 +34,13 @@ public class ProductController implements ProductsApi {
         }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<ProductDto> showProductById(String productId) {
+        ProductDto productDto = productMapper.toProductDto(productService.getProduct(productId));
+        if (productDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
+    }
 }

@@ -28,6 +28,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.13.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -40,6 +45,7 @@
                     <inputSpec>
                         ${project.basedir}/src/pos-api.yaml
                     </inputSpec>
+                    <generatorName>spring</generatorName>
                     <modelNameSuffix>Dto</modelNameSuffix>
                     <apiPackage>com.micropos.api</apiPackage>
                     <modelPackage>com.micropos.dto</modelPackage>

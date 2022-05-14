@@ -7,6 +7,7 @@ import com.micropos.cart.mapper.CartMapper;
 import com.micropos.cart.model.Cart;
 import com.micropos.cart.model.Item;
 import com.micropos.cart.repository.CartRepository;
+import com.micropos.cart.repository.ItemRepository;
 import com.micropos.dto.CartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -24,6 +25,9 @@ import java.util.Optional;
 public class CartServiceImpl implements CartService {
 
     private CartRepository cartRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     private final String COUNTER_URL = "http://POS-COUNTER/counter/";
 
@@ -81,8 +85,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart add(Cart cart, Item item) {
-        if (cart.addItem(item))
+        item = itemRepository.save(item);
+        if (cart.addItem(item)) {
             return cartRepository.save(cart);
+        }
         return null;
     }
 
@@ -94,5 +100,11 @@ public class CartServiceImpl implements CartService {
     @Override
     public Optional<Cart> getCart(Integer cartId) {
         return cartRepository.findById(cartId);
+    }
+
+    @Override
+    public Cart newCart() {
+        Cart cart = new Cart();
+        return cartRepository.save(cart);
     }
 }

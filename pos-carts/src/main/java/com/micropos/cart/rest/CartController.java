@@ -1,16 +1,20 @@
 package com.micropos.cart.rest;
 
 import com.micropos.api.CartsApi;
+import com.micropos.cart.mapper.CartMapper;
 import com.micropos.cart.model.Cart;
 import com.micropos.cart.model.Item;
 import com.micropos.cart.service.CartService;
 import com.micropos.dto.CartDto;
-import com.micropos.dto.CartItemDto;
+import com.micropos.dto.ItemDto;
+import com.micropos.dto.OrderDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class CartController implements CartsApi {
@@ -22,24 +26,49 @@ public class CartController implements CartsApi {
         this.cartService = cartService;
     }
 
-    @Override
-    public ResponseEntity<CartDto> addItemToCart(Integer cartId, CartItemDto cartItemDto) {
-        return CartsApi.super.addItemToCart(cartId, cartItemDto);
+    private CartMapper cartMapper;
+
+    @Autowired
+    public void setCartMapper(CartMapper cartMapper) {
+        this.cartMapper = cartMapper;
     }
 
     @Override
-    public ResponseEntity<CartDto> createCart(CartDto cartDto) {
-        return CartsApi.super.createCart(cartDto);
+    public ResponseEntity<CartDto> addItemToCart(Integer cartId, ItemDto itemDto) {
+        Optional<Cart> optionalCart = cartService.getCart(cartId);
+        if (optionalCart.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Cart cart = cartService.add(optionalCart.get(), cartMapper.toItem(itemDto, optionalCart.get()));
+        return new ResponseEntity<>(cartMapper.toCartDto(cart), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<CartDto> createCart() {
+        System.out.println("createCart");
+        Cart cart = cartService.newCart();
+        if (cart == null) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(cartMapper.toCartDto(cart), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<List<CartDto>> listCarts() {
-        return CartsApi.super.listCarts();
+        List<Cart> carts = cartService.getAllCarts();
+        if (carts.isEmpty()) {
+            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(cartMapper.toCartDtos(carts), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<CartDto> showCartById(Integer cartId) {
-        return CartsApi.super.showCartById(cartId);
+        Optional<Cart> cartOptional = cartService.getCart(cartId);
+        if (cartOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(cartMapper.toCartDto(cartOptional.get()), HttpStatus.OK);
     }
 
     @Override

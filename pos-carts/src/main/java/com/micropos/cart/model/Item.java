@@ -18,10 +18,11 @@ public class Item implements Serializable {
     @Setter
     private Integer id;
 
-    @Column(name="cart_id")
+    @ManyToOne
+    @JoinColumn(name = "cart_id", nullable = false)
     @Getter
     @Setter
-    private Integer cartId;
+    private Cart cart;
 
     @Column(name = "product_id")
     @Getter

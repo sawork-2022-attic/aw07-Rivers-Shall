@@ -3,7 +3,7 @@ package com.micropos.cart.mapper;
 import com.micropos.cart.model.Cart;
 import com.micropos.cart.model.Item;
 import com.micropos.dto.CartDto;
-import com.micropos.dto.CartItemDto;
+import com.micropos.dto.ItemDto;
 import com.micropos.dto.ProductDto;
 import org.mapstruct.Mapper;
 
@@ -13,14 +13,15 @@ import java.util.List;
 
 @Mapper
 public interface CartMapper {
-    Collection<CartDto> toCartDtos(Collection<Cart> carts);
+    List<CartDto> toCartDtos(List<Cart> carts);
 
     Collection<Cart> toCarts(Collection<CartDto> cartDtos);
 
     default Cart toCart(CartDto cartDto) {
-        return new Cart().id(cartDto.getId())
-                .items(toItems(cartDto.getItems(), cartDto));
-
+        Cart cart = new Cart();
+        cart.id(cartDto.getId())
+                .items(toItems(cartDto.getItems(), cart));
+        return cart;
     }
 
     default CartDto toCartDto(Cart cart) {
@@ -29,11 +30,11 @@ public interface CartMapper {
     }
 
 
-    default List<CartItemDto> toItemDtos(List<Item> items) {
+    default List<ItemDto> toItemDtos(List<Item> items) {
         if (items == null || items.isEmpty()) {
             return null;
         }
-        List<CartItemDto> list = new ArrayList<>(items.size());
+        List<ItemDto> list = new ArrayList<>(items.size());
         for (Item item : items) {
             list.add(toItemDto(item));
         }
@@ -41,28 +42,27 @@ public interface CartMapper {
         return list;
     }
 
-    default List<Item> toItems(List<CartItemDto> itemDtos, CartDto cartDto) {
+    default List<Item> toItems(List<ItemDto> itemDtos, Cart cart) {
         if (itemDtos == null || itemDtos.isEmpty()) {
             return null;
         }
         List<Item> list = new ArrayList<>(itemDtos.size());
-        for (CartItemDto itemDto : itemDtos) {
-            list.add(toItem(itemDto, cartDto));
+        for (ItemDto itemDto : itemDtos) {
+            list.add(toItem(itemDto, cart));
         }
 
         return list;
     }
 
-    default CartItemDto toItemDto(Item item) {
-
-        return new CartItemDto().id(item.id())
+    default ItemDto toItemDto(Item item) {
+        return new ItemDto().id(item.id())
                 .amount(item.quantity())
                 .product(getProductDto(item));
     }
 
-    default Item toItem(CartItemDto itemDto, CartDto cartDto) {
+    default Item toItem(ItemDto itemDto, Cart cart) {
         return new Item().id(itemDto.getId())
-                .cartId(cartDto.getId())
+                .cart(cart)
                 .productId(itemDto.getProduct().getId())
                 .productName(itemDto.getProduct().getName())
                 .quantity(itemDto.getAmount())

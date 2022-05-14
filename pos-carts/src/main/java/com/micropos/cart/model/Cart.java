@@ -15,18 +15,20 @@ import java.util.List;
 public class Cart implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
     private Integer id;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "items", joinColumns = @JoinColumn(name = "cart_id"))
+    @OneToMany
     @Setter
     @Getter
     private List<Item> items = new ArrayList<>();
 
     public boolean addItem(Item item) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
         return items.add(item);
     }
 
