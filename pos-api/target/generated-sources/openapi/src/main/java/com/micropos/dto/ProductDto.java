@@ -18,7 +18,7 @@ import javax.annotation.Generated;
  * ProductDto
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-05-14T15:57:52.928105+08:00[Asia/Shanghai]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-05-14T20:35:06.102529+08:00[Asia/Shanghai]")
 public class ProductDto   {
 
   @JsonProperty("id")

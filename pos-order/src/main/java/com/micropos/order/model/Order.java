@@ -1,19 +1,24 @@
 package com.micropos.order.model;
 
 import com.micropos.cart.model.Cart;
+import com.micropos.dto.OrderDto;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
 @Data
+@Accessors(fluent = true, chain = true)
 public class Order {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    @JoinTable(name = "carts", joinColumns = @JoinColumn(name = "cart_id"))
-    private Cart cart;
+    @OneToMany
+    private List<Item> items;
+
+    OrderDto.StatusEnum status;
 }

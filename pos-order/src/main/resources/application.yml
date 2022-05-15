@@ -1,8 +1,10 @@
 spring:
   application:
-    name: pos-order
+    name: pos-order-service
+  main:
+    allow-circular-references: false
 server:
-  port: 0
+  port: 9000
 eureka:
   client:
     serviceUrl:
