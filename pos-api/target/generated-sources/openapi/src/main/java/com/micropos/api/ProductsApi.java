@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-05-14T20:35:06.102529+08:00[Asia/Shanghai]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-05-15T15:58:58.116308+08:00[Asia/Shanghai]")
 @Validated
 @Tag(name = "products", description = "the products API")
 public interface ProductsApi {
